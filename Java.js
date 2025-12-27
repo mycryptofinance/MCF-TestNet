@@ -26,7 +26,7 @@ const CONTRACT_CONFIG = {
         nft: "0x...", // Вставьте адрес контракта NFT для ARC
         staking: "0x...", // Вставьте адрес контракта Staking для ARC
         explorerUrl: "https://testnet.arcscan.app"
-    }
+    },
     
     // BNB Smart Chain Testnet (Chain ID: 97)
     97: {
