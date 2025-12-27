@@ -18,6 +18,17 @@ const CONTRACT_CONFIG = {
         staking: "0x825FC04C154053d9F1f697cd9522019224343fC9",
         explorerUrl: "https://nexus.testnet.blockscout.com" 
     },
+     // Arc Testnet (Chain ID: 5042002)
+      5042002: {
+        networkName: "Arc Testnet",
+        nativeTicker: "USDC", // В этой сети газ оплачивается в USDC
+        mcf: "0x...", // Вставьте адрес контракта MCF для ARC
+        nft: "0x...", // Вставьте адрес контракта NFT для ARC
+        staking: "0x...", // Вставьте адрес контракта Staking для ARC
+        explorerUrl: "https://testnet.arcscan.app"
+    }
+};
+    
     // BNB Smart Chain Testnet (Chain ID: 97)
     97: {
         networkName: "BNB Testnet",
@@ -384,6 +395,30 @@ const addNexusNetwork = async () => {
         return true;
     } catch (e) { return false; }
 };
+
+const addArcNetwork = async () => {
+    try {
+        await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+                chainId: '0x4CEE52', // HEX для 5042002
+                chainName: 'Arc Testnet',
+                nativeCurrency: { 
+                    name: 'USDC', 
+                    symbol: 'USDC', 
+                    decimals: 18 // Важно: USDC в Arc Testnet имеет 18 знаков
+                },
+                rpcUrls: ['https://rpc.testnet.arc.network'],
+                blockExplorerUrls: ['https://testnet.arcscan.app'],
+            }],
+        });
+        return true;
+    } catch (e) {
+        console.error("Ошибка при добавлении ARC Network:", e);
+        return false;
+    }
+};
+
 
 async function switchNetwork(chainId) {
     if (chainId === 97) await addBNBTestnet();
