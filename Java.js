@@ -13,21 +13,20 @@ const CONTRACT_CONFIG = {
     3945: {
         networkName: "Nexus Testnet",
         nativeTicker: "NEX",
-        mcf: "0xb66008C221CE3699c7F50AebB07898695845e95f", // Укажите актуальный адрес для Nexus
+        mcf: "0xb66008C221CE3699c7F50AebB07898695845e95f",
         nft: "0xda2384357a072818a7c1BC4Bbd79Edf22065c95A", 
         staking: "0x825FC04C154053d9F1f697cd9522019224343fC9",
         explorerUrl: "https://nexus.testnet.blockscout.com" 
     },
-     // Arc Testnet (Chain ID: 5042002)
-      5042002: {
+    // Arc Testnet (Chain ID: 5042002)
+    5042002: {
         networkName: "Arc Testnet",
-        nativeTicker: "USDC", // В этой сети газ оплачивается в USDC
-        mcf: "0x...", // Вставьте адрес контракта MCF для ARC
-        nft: "0x...", // Вставьте адрес контракта NFT для ARC
-        staking: "0x...", // Вставьте адрес контракта Staking для ARC
+        nativeTicker: "USDC",
+        mcf: "0x...", 
+        nft: "0x...", 
+        staking: "0x...", 
         explorerUrl: "https://testnet.arcscan.app"
     },
-    
     // BNB Smart Chain Testnet (Chain ID: 97)
     97: {
         networkName: "BNB Testnet",
@@ -39,7 +38,7 @@ const CONTRACT_CONFIG = {
     }
 };
 
-const MCF_ABI = [{"inputs":[{"internalType":"address","name":"initialOwner","type":"address"},{"internalType":"address payable","name":"_treasuryWallet","type":"address"},{"internalType":"uint256","name":"_initialMintPrice","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"allowance","type":"uint256"},{"internalType":"uint256","name":"needed","type":"uint256"}],"name":"ERC20InsufficientAllowance","type":"error"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"uint256","name":"balance","type":"uint256"},{"internalType":"uint256","name":"needed","type":"uint256"}],"name":"ERC20InsufficientBalance","type":"error"},{"inputs":[{"internalType":"address","name":"approver","type":"address"}],"name":"ERC20InvalidApprover","type":"error"},{"inputs":[{"internalType":"address","name":"receiver","type":"address"}],"name":"ERC20InvalidReceiver","type":"error"},{"inputs":[{"internalType":"address","name":"sender","type":"address"}],"name":"ERC20InvalidSender","type":"error"},{"inputs":[{"internalType":"address","name":"spender","type":"address"}],"name":"ERC20InvalidSpender","type":"error"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"mintPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"newPrice","type":"uint256"}],"name":"setMintPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"newTreasury","type":"address"}],"name":"setTreasuryWallet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"treasuryWallet","outputs":[{"internalType":"address payable","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdrawAccidentalNativeTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
+const MCF_ABI = [{"inputs":[{"internalType":"address","name":"initialOwner","type":"address"},{"internalType":"address payable","name":"_treasuryWallet","type":"address"},{"internalType":"uint256","name":"_initialMintPrice","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"allowance","type":"uint256"},{"internalType":"uint256","name":"needed","type":"uint256"}],"name":"ERC20InsufficientAllowance","type":"error"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"uint256","name":"balance","type":"uint256"},{"internalType":"uint256","name":"needed","type":"uint256"}],"name":"ERC20InsufficientBalance","type":"error"},{"inputs":[{"internalType":"address","name":"approver","type":"address"}],"name":"ERC20InvalidApprover","type":"error"},{"inputs":[{"internalType":"address","name":"receiver","type":"address"}],"name":"ERC20InvalidReceiver","type":"error"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"uint256","name":"balance","type":"uint256"},{"internalType":"uint256","name":"needed","type":"uint256"}],"name":"ERC20InvalidSender","type":"error"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"ERC20InvalidSpender","type":"error"},{"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"mintPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"newPrice","type":"uint256"}],"name":"setMintPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"newTreasury","type":"address"}],"name":"setTreasuryWallet","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"treasuryWallet","outputs":[{"internalType":"address payable","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdrawAccidentalNativeTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
 const NFT_ABI = ["function mintByMCF(uint256 editionId)", "function hasEditionMinted(address _addr, uint256 editionId) view returns (bool)"];
 const STAKING_ABI = ["function stake(uint256 amount, uint8 tier)", "function unstake(uint8 tier)", "function calculateReward(address user, uint8 tier) view returns (uint256)", "function userStakes(address, uint8) view returns (uint256 amount, uint256 startTime, uint256 lockDuration)", "function tierConfigs(uint8) view returns (uint256 lockDuration, uint256 rewardMultiplier)"];
 
@@ -341,7 +340,7 @@ async function fetchMCFData() {
         const max = await mcfContract.MAX_SUPPLY();
         const remaining = max.sub(total);
         const config = CONTRACT_CONFIG[currentChainId] || CONTRACT_CONFIG[11155111];
-        document.getElementById('soldDisplay').innerText = parseFloat(ethers.utils.forешьmatEther(remaining)).toLocaleString();
+        document.getElementById('soldDisplay').innerText = parseFloat(ethers.utils.formatEther(remaining)).toLocaleString();
         document.getElementById('priceDisplay').innerText = ethers.utils.formatEther(price) + " " + config.nativeTicker;
         const pct = total.mul(100).div(max).toNumber();
         document.getElementById('supplyBar').style.width = pct + "%";
@@ -384,10 +383,10 @@ const addNexusNetwork = async () => {
         await window.ethereum.request({
             method: 'wallet_addEthereumChain',
             params: [{
-                chainId: '0xF69', // 3945 in Hex
+                chainId: '0xF69',
                 chainName: 'Nexus Testnet',
                 nativeCurrency: { name: 'Nexus', symbol: 'NEX', decimals: 18 },
-                rpcUrls: ['https://testnet.rpc.nexus.xyz'], // Уточните RPC Nexus
+                rpcUrls: ['https://testnet.rpc.nexus.xyz'],
                 blockExplorerUrls: ['https://nexus.testnet.blockscout.com'],
             }],
         });
@@ -400,29 +399,21 @@ const addArcNetwork = async () => {
         await window.ethereum.request({
             method: 'wallet_addEthereumChain',
             params: [{
-                chainId: '0x4CEE52', // HEX для 5042002
+                chainId: '0x4CEE52',
                 chainName: 'Arc Testnet',
-                nativeCurrency: { 
-                    name: 'USDC', 
-                    symbol: 'USDC', 
-                    decimals: 18 // Важно: USDC в Arc Testnet имеет 18 знаков
-                },
+                nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
                 rpcUrls: ['https://rpc.testnet.arc.network'],
                 blockExplorerUrls: ['https://testnet.arcscan.app'],
             }],
         });
         return true;
-    } catch (e) {
-        console.error("Ошибка при добавлении ARC Network:", e);
-        return false;
-    }
+    } catch (e) { return false; }
 };
-
 
 async function switchNetwork(chainId) {
     if (chainId === 97) await addBNBTestnet();
-    if (chainId === 3945) await addNexusNetwork(); //
-    if (chainId === 5042002) await addArcNetwork(); //
+    if (chainId === 3945) await addNexusNetwork();
+    if (chainId === 5042002) await addArcNetwork();
     
     try { 
         await window.ethereum.request({ 
@@ -430,17 +421,18 @@ async function switchNetwork(chainId) {
             params: [{ chainId: ethers.utils.hexValue(parseInt(chainId)) }] 
         });
     } catch(e) { 
-        if(e.code !== 4902) {
+        if(e.code === 4902) {
+             console.log("Network needs to be added first.");
+        } else {
              openModal('error', "Switch failed"); 
         }
     }
-                }
+}
 
 function switchNetworkByValue(chainId, name) {
     const btn = document.getElementById('networkBtn');
     if(btn) btn.innerText = name;
     
-    // Закрываем меню после выбора
     const dropdown = document.getElementById('networkDropdown');
     if(dropdown) dropdown.classList.remove('show');
     
@@ -449,8 +441,9 @@ function switchNetworkByValue(chainId, name) {
 
 // Обработчик кнопки меню
 document.getElementById('networkBtn').addEventListener('click', (e) => {
-    e.stopPropagation(); // Чтобы клик не всплывал
-    document.getElementById('networkDropdown').classList.toggle('show');
+    e.stopPropagation();
+    const dropdown = document.getElementById('networkDropdown');
+    if(dropdown) dropdown.classList.toggle('show');
 });
 
 // Закрытие при клике в любое другое место
@@ -474,10 +467,12 @@ async function setMaxMint() {
     const gas = ethers.utils.parseEther("0.005");
     let max = bal.sub(gas);
     document.getElementById('mintAmountEth').value = ethers.utils.formatEther(max.gt(0)?max:0);
+    document.getElementById('mintAmountEth').dispatchEvent(new Event('input'));
 }
 async function setMaxStake() {
     const bal = await mcfContract.balanceOf(userAccount);
     document.getElementById('stakeAmount').value = ethers.utils.formatEther(bal);
+    calcStakeReward();
 }
 async function setMaxSend() {
     const bal = await mcfContract.balanceOf(userAccount);
@@ -495,7 +490,9 @@ async function addTokenToWallet() {
 }
 
 function openModal(type, title, txHash = null, details = null) {
-    const m = document.getElementById('txModal'); m.style.display='flex';
+    const m = document.getElementById('txModal'); 
+    if(!m) return;
+    m.style.display='flex';
     let iconHtml = '';
     if(type === 'loading') iconHtml = '<div class="spinner"></div>';
     else if(type === 'success') iconHtml = '✅';
@@ -503,9 +500,8 @@ function openModal(type, title, txHash = null, details = null) {
     document.getElementById('modalIcon').innerHTML = iconHtml;
     document.getElementById('modalDesc').innerHTML = `<h3>${title}</h3><p>${details||''}</p>`;
 }
-function closeModal() { document.getElementById('txModal').style.display='none'; }
-document.getElementById('networkBtn').addEventListener('click', () => document.getElementById('networkDropdown').classList.toggle('show'));
-function switchNetworkByValue(chainId, name) {
-    document.getElementById('networkBtn').innerText = name;
-    switchNetwork(chainId);
+
+function closeModal() { 
+    const m = document.getElementById('txModal');
+    if(m) m.style.display='none'; 
 }
