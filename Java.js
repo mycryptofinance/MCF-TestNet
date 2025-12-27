@@ -422,7 +422,7 @@ const addArcNetwork = async () => {
 
 async function switchNetwork(chainId) {
     if (chainId === 97) await addBNBTestnet();
-    if (chainId === 392) await addNexusNetwork();
+    if (chainId === 3945) await addNexusNetwork();
     try { 
         await window.ethereum.request({ 
             method: 'wallet_switchEthereumChain', 
