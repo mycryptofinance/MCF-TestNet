@@ -10,13 +10,13 @@ const CONTRACT_CONFIG = {
         explorerUrl: "https://sepolia.etherscan.io"
     },
     // Nexus Testnet (Chain ID: 3945)
-    392: {
+    3945: {
         networkName: "Nexus Testnet",
         nativeTicker: "NEX",
         mcf: "0xb66008C221CE3699c7F50AebB07898695845e95f", // Укажите актуальный адрес для Nexus
         nft: "0xda2384357a072818a7c1BC4Bbd79Edf22065c95A", 
         staking: "0x825FC04C154053d9F1f697cd9522019224343fC9",
-        explorerUrl: "https://explorer.nexus.xyz" 
+        explorerUrl: "https://nexus.testnet.blockscout.com" 
     },
     // BNB Smart Chain Testnet (Chain ID: 97)
     97: {
@@ -331,7 +331,7 @@ async function fetchMCFData() {
         const max = await mcfContract.MAX_SUPPLY();
         const remaining = max.sub(total);
         const config = CONTRACT_CONFIG[currentChainId] || CONTRACT_CONFIG[11155111];
-        document.getElementById('soldDisplay').innerText = parseFloat(ethers.utils.formatEther(remaining)).toLocaleString();
+        document.getElementById('soldDisplay').innerText = parseFloat(ethers.utils.forешьmatEther(remaining)).toLocaleString();
         document.getElementById('priceDisplay').innerText = ethers.utils.formatEther(price) + " " + config.nativeTicker;
         const pct = total.mul(100).div(max).toNumber();
         document.getElementById('supplyBar').style.width = pct + "%";
