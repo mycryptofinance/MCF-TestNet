@@ -498,20 +498,20 @@ const addArcNetwork = async () => {
 };
 
 
-// async function switchNetwork(chainId) {
-//     if (chainId === 5042002) await addArcNetwork();
-//     if (chainId === 97) await addBNBTestnet();
-//     if (chainId === 3945) await addNexusNetwork();
+async function switchNetwork(chainId) {
+    if (chainId === 5042002) await addArcNetwork();
+    if (chainId === 97) await addBNBTestnet();
+    if (chainId === 3945) await addNexusNetwork();
     
-//     try { 
-//         await window.ethereum.request({ 
-//             method: 'wallet_switchEthereumChain', 
-//             params: [{ chainId: ethers.utils.hexValue(parseInt(chainId)) }] 
-//         });
-//     } catch(e) { 
-//         if(e.code !== 4902) openModal('error', "Switch failed"); 
-//     }
-// }
+    try { 
+        await window.ethereum.request({ 
+            method: 'wallet_switchEthereumChain', 
+            params: [{ chainId: ethers.utils.hexValue(parseInt(chainId)) }] 
+        });
+    } catch(e) { 
+        if(e.code !== 4902) openModal('error', "Switch failed"); 
+    }
+}
 
 
 
