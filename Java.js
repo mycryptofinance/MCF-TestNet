@@ -632,3 +632,61 @@ function switchNetworkByValue(chainId, chainName) {
     switchNetwork(chainId); 
     document.getElementById('networkDropdown').classList.remove('show');
 }
+
+const canvas = document.getElementById('snowCanvas');
+const ctx = canvas.getContext('2d');
+
+let width, height, snowflakes = [];
+
+// Установка размеров холста
+function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', resize);
+resize();
+
+// Создание снежинки
+function createSnowflakes() {
+    const count = 250; // Количество снежинок
+    snowflakes = [];
+    for (let i = 0; i < count; i++) {
+        snowflakes.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            opacity: Math.random(),
+            speedX: Math.random() * 1 - 0.3,
+            speedY: Math.random() * 1 + 1,
+            radius: Math.random() * 2 + 1
+        });
+    }
+}
+
+// Рисование и анимация
+function draw() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; // Белый цвет с прозрачностью
+    ctx.beginPath();
+
+    for (let flake of snowflakes) {
+        ctx.moveTo(flake.x, flake.y);
+        ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+        
+        // Движение
+        flake.y += flake.speedY;
+        flake.x += flake.speedX;
+
+        // Если снежинка улетела вниз — возвращаем её наверх
+        if (flake.y > height) {
+            flake.y = -flake.radius;
+            flake.x = Math.random() * width;
+        }
+    }
+    
+    ctx.fill();
+    requestAnimationFrame(draw);
+}
+
+createSnowflakes();
+draw();
