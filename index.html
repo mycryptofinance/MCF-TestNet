@@ -14,8 +14,19 @@
 <body>
 
     <header>
-        <div class="brand">
-            <div class="logo-icon">⚡</div>
+       <div class="brand">
+            <div class="logo-icon" style="position: relative;">
+                <span class="santa-hat">🎅</span>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" 
+                height="28" viewBox="0 0 24 24" fill="none" 
+                stroke="currentColor" stroke-width="2" 
+                stroke-linecap="round" stroke-linejoin="round" 
+                class="lucide lucide-badge-check-icon lucide-badge-check">
+                <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/>
+                <path d="m9 12 2 2 4-4"/></svg>
+                
+            </div>
             MyCryptoFinance DEFI
         </div>
 
@@ -33,7 +44,9 @@
             </div>
 
             <div class="network-switcher">
-                <button id="networkBtn" class="network-select">Sepolia</button>
+                <button id="networkBtn" class="network-select">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link-icon lucide-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    Chain Network</button>
                 <div id="networkDropdown" class="network-dropdown-content">
                     <button onclick="switchNetworkByValue(5042002, 'Arc Testnet')">Arc Testnet</button>
                     <button onclick="switchNetworkByValue(11155111, 'Sepolia')">Sepolia</button>
@@ -46,7 +59,20 @@
                 </div>
             </div>
     
-            <button id="connectBtn" class="btn-connect">CONNECT</button>
+              <button id="connectBtn" class="btn-connect">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" 
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                class="lucide lucide-unplug-icon lucide-unplug"><path d="m19 5 3-3"/><path d="m2 22 3-3"/>
+                <path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z"/>
+                <path d="M7.5 13.5 10 11"/><path d="M10.5 16.5 13 14"/>
+                <path d="m12 6 6 6 2.3-2.3a2.4 2.4 0 0 0 0-3.4l-2.6-2.6a2.4 2.4 0 0 0-3.4 0Z"/></svg>CONNECT</button>
+        </div>
+        <div class="header-garland">
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
         </div>
     </header>
 
