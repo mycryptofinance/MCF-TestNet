@@ -1,0 +1,476 @@
+/* ============================================================
+   1. ПАНЕЛЬ СОЗДАНИЯ ТОКЕНОВ (TOKEN FACTORY)
+   Оформление полей ввода, подсказок и выбора типа токена
+   ============================================================ */
+
+   .factory-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.factory-inputs input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(100, 255, 218, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+}
+
+.factory-hint {
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+/* Стилизация стандартного выпадающего списка */
+.factory-select {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(100, 255, 218, 0.3);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,...");
+}
+
+/* ============================================================
+   2. КАСТОМНЫЙ ВЫПАДАЮЩИЙ СПИСОК (CUSTOM SELECT)
+   Дизайн селектора, имитирующего выбор сети
+   ============================================================ */
+
+.custom-select-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.select-trigger {
+    background: rgba(13, 17, 23, 0.8);
+    border: 1px solid rgba(100, 255, 218, 0.2);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.select-trigger:hover {
+    border-color: #64ffda;
+    background: rgba(100, 255, 218, 0.05);
+}
+
+.select-options {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background: #0d1117;
+    border: 1px solid #64ffda;
+    border-radius: 12px;
+    display: none;
+    z-index: 1000;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.option {
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.option:hover {
+    background: rgba(100, 255, 218, 0.1);
+    color: #64ffda;
+}
+
+.custom-select-container.open .select-options {
+    display: block;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.custom-select-container.open i {
+    transform: rotate(180deg);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   3. СПИСОК ТОКЕНОВ ПОЛЬЗОВАТЕЛЯ (YOUR TOKENS)
+   Отображение карточек токенов, балансов и кнопок управления
+   ============================================================ */
+
+.manage-token-area {
+    margin-top: 25px;
+    padding: 15px;
+    background: rgba(100, 255, 218, 0.05);
+    border-radius: 12px;
+    border: 1px dashed rgba(100, 255, 218, 0.3);
+}
+
+.mini-table {
+    margin-top: 15px;
+    font-size: 0.75rem;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.token-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.token-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.token-name-tag {
+    color: #64ffda;
+    font-size: 0.85rem;
+}
+
+.token-ticker {
+    font-weight: 300;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.token-addr-small {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+.balance-display {
+    background: rgba(100, 255, 218, 0.05);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    font-family: 'monospace';
+}
+
+.balance-display:hover {
+    background: rgba(100, 255, 218, 0.15);
+    border-color: rgba(100, 255, 218, 0.5);
+}
+
+.hide-zero-wrapper {
+    transition: opacity 0.3s;
+    user-select: none;
+}
+
+.hide-zero-wrapper:hover {
+    opacity: 0.8;
+}
+
+#hideZeroCheckbox {
+    accent-color: #64ffda;
+    width: 14px;
+    height: 14px;
+}
+
+.token-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.mini-copy-btn, .mini-add-btn {
+    background: none;
+    border: 1px solid rgba(100, 255, 218, 0.3);
+    color: #64ffda;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.mini-copy-btn:hover, .mini-add-btn:hover {
+    background: rgba(100, 255, 218, 0.1);
+}
+
+/* ============================================================
+   4. МОДАЛЬНЫЕ ОКНА (MODALS SYSTEM)
+   Общие стили для окон транзакций, управления и статуса
+   ============================================================ */
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 10000; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    align-items: center; 
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(16, 20, 24, 0.95);
+    border: 1px solid rgba(100, 255, 218, 0.2);
+    border-radius: 20px;
+    padding: 30px 25px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal.active .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    color: #64ffda;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.close-modal:hover { color: #fff; }
+
+.modal-input {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(100, 255, 218, 0.1) !important;
+    color: #fff !important;
+    padding: 12px !important;
+    margin-bottom: 10px !important;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-input:focus {
+    border-color: #64ffda !important;
+    background: rgba(100, 255, 218, 0.05) !important;
+    outline: none;
+}
+
+.metamask-btn-modal {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(100, 255, 218, 0.3);
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.3s;
+    font-weight: 500;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.metamask-btn-modal:hover {
+    background: rgba(100, 255, 218, 0.1);
+    border-color: #64ffda;
+    box-shadow: 0 0 15px rgba(100, 255, 218, 0.2);
+}
+
+.send-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #64ffda;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+/* Компактные кнопки в модальных окнах */
+#tokenModal .action-btn, 
+#statusCloseBtn {
+    width: auto !important;
+    min-width: 160px;
+    margin: 20px auto 0;
+    display: block;
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%);
+    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#tokenModal .action-btn:hover, 
+#statusCloseBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5);
+    filter: brightness(1.1);
+}
+
+/* Блок отображения и копирования адреса */
+.address-copy-row {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px 0;
+    justify-content: space-between;
+    border: 1px solid rgba(100, 255, 218, 0.1);
+}
+
+.address-copy-row code {
+    color: #64ffda;
+    font-size: 0.8rem;
+    word-break: break-all;
+}
+
+.copy-icon-btn {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 5px;
+    transition: 0.3s;
+}
+
+.copy-icon-btn:hover {
+    color: #64ffda;
+}
+
+.success-label {
+    color: #64ffda;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* ============================================================
+   5. ЭФФЕКТЫ И СЛУЖЕБНЫЕ КЛАССЫ
+   Анимации, иконки загрузки и ссылки на блокчейн-скан
+   ============================================================ */
+
+.status-icon-container i {
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#statusModal.active .status-icon-container i {
+    transform: scale(1.2);
+}
+
+.fa-spinner {
+    color: #64ffda;
+    font-size: 0.7rem;
+}
+
+.explorer-link {
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.explorer-link:hover {
+    filter: brightness(1.4);
+    transform: translateY(-1px);
+}
+
+.clickable-action {
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+}
+
+.clickable-action:hover {
+    filter: brightness(1.2);
+}
+
+.clickable-action:hover b {
+    text-decoration: underline;
+}
+
+#txLinkContainer a:hover {
+    color: #fff !important;
+    border-bottom-color: #fff !important;
+}
+
+/* ============================================================
+   6. АДАПТИВНАЯ ВЕРСТКА (MEDIA QUERIES)
+   Настройки отображения для планшетов и смартфонов
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .factory-inputs {
+        gap: 8px;
+    }
+    .token-actions-row {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        width: 95% !important;
+        margin: 20% auto !important;
+        padding: 15px !important;
+    }
+    .modal-token-name {
+        font-size: 1.2rem;
+    }
+    .address-copy-row code {
+        font-size: 0.7rem;
+    }
+    .action-btn {
+        padding: 12px 10px !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal {
+        padding: 15px;
+        align-items: flex-start;
+        padding-top: 15vh;
+    }
+    .modal-content {
+        padding: 25px 20px;
+    }
+}
+
+@media (max-width: 400px) {
+    .send-label {
+        display: none;
+    }
+}

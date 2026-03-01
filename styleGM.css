@@ -1,0 +1,67 @@
+.gm-container {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.gm-card {
+    padding: 25px !important;
+    border: 1px solid rgba(100, 255, 218, 0.3) !important;
+}
+
+.gm-info {
+    margin-bottom: 20px;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.gm-info i {
+    font-size: 24px;
+    color: #64ffda;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Пульсация доступной кнопки */
+.gm-ready {
+    box-shadow: 0 0 15px rgba(100, 255, 218, 0.4);
+    animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.4); }
+    70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(100, 255, 218, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(100, 255, 218, 0); }
+}
+
+/* Вид неактивной кнопки */
+.gm-btn-disabled {
+    background: #1a1f26 !important;
+    color: #555 !important;
+    border-color: #333 !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+.timer-display {
+    margin-top: 10px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    color: #64ffda;
+}
+
+.gm-stats {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: #64ffda; /* Твой основной неоновый цвет */
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+}
+
+.gm-stats i {
+    color: #ffb700; /* Цвет огня - золотисто-оранжевый */
+    filter: drop-shadow(0 0 5px rgba(255, 183, 0, 0.6));
+}

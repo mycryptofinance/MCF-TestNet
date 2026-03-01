@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MCF Protocol | TestNet </title>
+    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="styleGM.css">
+    <link rel="stylesheet" href="styleDeploy.css">
+    <link type="image/x-icon" href="https://i.ibb.co/m58shBg0/image-1.png" rel="shortcut icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+<body>
+
+    <canvas id="networkCanvas"></canvas>
+
+    <header class="navbar">
+        <div class="logo">MCF <span>PROTOCOL</span></div>
+        
+        <div class="nav-actions">
+            <div class="network-wrapper">
+                <button id="networkBtn" class="network-select">Select Network</button>
+                <div id="networkDropdown" class="dropdown-content">
+                    <div onclick="switchNetworkByValue(5042002, 'Arc Testnet')">Arc Network</div>
+                    <div onclick="switchNetworkByValue(46630, 'Robinhood')">Robinhood Chain</div>
+                    <!-- <div onclick="switchNetworkByValue(97, 'BNB Testnet')">BNB Testnet</div>
+                    <div onclick="switchNetworkByValue(11155111, 'Sepolia')">Sepolia</div> -->
+                    
+                </div>
+            </div>
+
+            <div class="wallet-info-wrapper">
+                <div class="balances-badge">
+                    <span id="nativeBalanceDisplay">0.00</span> <small id="nativeTicker">ETH</small>
+                    <span class="sep">|</span>
+                    <span id="mcfBalanceDisplay">0</span> <small>MCF</small>
+                </div>
+                <button id="connectBtn" class="connect-button">Connect</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <section class="section-block">
+
+
+            <div class="faucet-container">
+                <span class="faucet-label">Get Test Tokens:</span>
+                <div class="faucet-links">
+                    <a href="https://faucet.circle.com" target="_blank" class="faucet-chip">
+                        <i class="fas fa-faucet"></i> Arc
+                    </a>
+                    <a href="https://www.bnbchain.org/en/testnet-faucet" target="_blank" class="faucet-chip">
+                        <i class="fab fa-binance"></i> BNB
+                    </a>
+                    <a href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia" target="_blank" class="faucet-chip">
+                        <i class="fab fa-ethereum"></i> Sepolia
+                    </a>
+                    <a href="https://faucet.testnet.chain.robinhood.com" target="_blank" class="faucet-chip">
+                        <i class="fas fa-parachute-box"></i> Robinhood
+                    </a>
+                </div>
+            </div>
+
+            <section class="section-block">
+                <h2 class="section-title">DAILY <span>REWARDS</span></h2>
+                <div class="gm-container">
+                    <div class="gm-card glass-card">
+                        <div class="gm-stats">
+                            <i class="fas fa-fire"></i> Total GMs: <span id="userGmCount">0</span>
+                        </div>
+            
+                        <div class="gm-info">
+                            <i class="fas fa-calendar-check" style="display: none;"></i> <p>Chain GM every 24 hours to confirm your on-chain activity!</p>
+                        </div>
+            
+                        <button id="gmBtn" class="action-btn centered-btn" onclick="handleGM()">
+                            <span id="gmBtnText">CHECK STATUS...</span>
+                        </button>
+                        
+                        <p id="gmTimerText" class="timer-display"></p>
+                    </div>
+                </div>
+            </section>
+
+            <h2 class="section-title">
+                TOKEN <span>MINT</span> <span class="title-icon-after">✔</span>
+            </h2>
+            <div class="glass-card mint-card">
+                <div class="price-info">Price: <span id="priceDisplay">...</span></div>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span id="soldPercentage">0% SOLD</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="supplyBar" class="progress-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div class="progress-box">
+                    <div class="progress-text">
+                        <span id="progressText">0 / 0 SOLD</span>
+                        <span>Remaining: <b id="soldDisplay">0</b></span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="supplyBar" class="progress-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <label>You Pay</label>
+                    <div class="web3-input">
+                        <input type="number" id="mintAmountEth" placeholder="0.0">
+                        <span id="nativeTickerInput" class="token-tag" style="margin-right: 12px;">NATIVE</span>
+                        <button class="max-badge" onclick="setMaxMint()">MAX</button>
+                    </div>
+                </div>
+
+                <div class="result-calc">
+                    You Receive: <strong id="calcOutput">0 MCF</strong>
+                </div>
+
+                <button id="mintBtn" class="action-btn centered-btn" onclick="mintToken()" disabled>
+                    <span id="mintBtnText">CONNECT WALLET</span>
+                </button>
+                
+                <button class="add-token-btn" onclick="addTokenToWallet()">+ Add MCF to Metamask</button>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <h2 class="section-title">TOKEN <span>FACTORY</span></h2>
+            
+            <div class="glass-card token-factory-card">
+                <p class="factory-hint">Create your own asset on <span id="currentNetworkName">Network</span></p>
+                
+                <div class="factory-inputs">
+                    <input type="text" id="tokenName" placeholder="Token Name ( My Coin )">
+                    <input type="text" id="tokenSymbol" placeholder="Token Symbol ( MYC )">
+                    <input type="number" id="tokenSupply" placeholder="Total Supply 10000">
+                    
+                    <div class="custom-select-container" id="tokenTypeContainer">
+                        <div class="select-trigger" onclick="toggleTokenSelect()">
+                            <span id="selectedTokenText">Standard Token</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="select-options" id="tokenOptions">
+                            <div class="option" onclick="selectTokenType('Standard Token', 0)">Standard Token</div>
+                            <div class="option" onclick="selectTokenType('Burnable (Deflationary)', 1)">Burnable (Deflationary)</div>
+                            <div class="option" onclick="selectTokenType('Tax Token (5% Fee)', 2)">Tax Token (5% Fee)</div>
+                        </div>
+                        <input type="hidden" id="tokenType" value="0">
+                    </div>
+                </div>
+        
+                <button class="action-btn centered-btn mt-20" onclick="deployUserToken()">
+                    <i class="fas fa-rocket"></i> DEPLOY TOKEN
+                </button>
+        
+                <div id="factoryStatus" class="timer-display" style="text-align: center; margin-top: 15px;"></div>
+        
+                <div id="manageTokenArea" class="manage-token-area" style="display: none;">
+                    <div class="token-success-info">
+                        <p class="success-label"><i class="fas fa-check-circle"></i> Token Deployed Successfully!</p>
+                        <div class="address-copy-row">
+                            <code id="newTokenAddress">0x...</code>
+                            <button class="copy-icon-btn" id="copyMainAddr" onclick="copyMainTokenAddress()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="token-actions-row">
+                            <button class="mini-btn metamask-btn" onclick="addCurrentTokenToMetamask()">
+                                <img src="assets/metamask-fox.svg" alt="" class="btn-icon"> Add to Metamask
+                            </button>
+                        </div>
+                    </div>
+        
+                    <div class="send-created-token mt-20">
+                        <h4><i class="fas fa-paper-plane"></i> Quick Send</h4>
+                        <div class="factory-inputs">
+                            <input type="text" id="sendTokenTo" placeholder="Recipient Address (0x...)">
+                            <input type="number" id="sendTokenAmount" placeholder="Amount to send">
+                        </div>
+                        <button class="action-btn mini-btn-full mt-10" onclick="transferCreatedToken()">
+                            SEND TOKENS
+                        </button>
+                    </div>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px solid rgba(100, 255, 218, 0.1); margin: 25px 0;">
+        
+                <div class="history-section">
+                    <div class="history-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4>Your Tokens</h4>
+                        <label class="hide-zero-wrapper" style="font-size: 0.75rem; color: #64ffda; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <input type="checkbox" id="hideZeroCheckbox" onchange="renderUserTokens()" style="cursor: pointer;"> 
+                            Hide Zero Balances
+                        </label>
+                    </div>
+                    <div id="myTokensList" class="mini-table">
+                        <p class="empty-msg">No tokens created yet</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <h2 class="section-title">STAKING <span>DASHBOARD</span></h2>
+            <div class="staking-layout">
+                <div class="glass-card">
+                    <h3>Stake Your Tokens</h3>
+                    <div id="stakingPlans" class="plans-grid">
+                        </div>
+                    
+                    <div class="input-container mt-25">
+                        <div class="web3-input">
+                            <input type="number" id="stakeAmount" placeholder="Amount">
+                            <button class="max-badge" onclick="setMaxStake()">MAX</button>
+                        </div>
+                        <div id="stakeRewardCalc" class="reward-hint">~0.00 MCF Reward</div>
+                    </div>
+
+                    <button class="action-btn centered-btn" onclick="stakeTokens()">STAKE NOW</button>
+                </div>
+
+                <div class="glass-card">
+                    <h3>Active Stakes</h3>
+                    <div id="userStakesList" class="stakes-container">
+                        <p class="empty-msg">Connect wallet to view stakes</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-block">
+            <h2 class="section-title">NFT <span>EDITIONS</span></h2>
+            <div id="nftGrid" class="nft-display-grid">
+                </div>
+        </section>
+
+        <section class="section-block">
+            <div class="glass-card transfer-box">
+                <h3>Quick Transfer MCF </h3>
+                <div class="input-stack">
+                    <div class="web3-input mb-15">
+                        <input type="text" id="recipientAddress" placeholder="0x... address">
+                    </div>
+                    <div class="web3-input mb-15">
+                        <input type="number" id="sendAmount" placeholder="Amount">
+                        <button class="max-badge" onclick="setMaxSend()">MAX</button>
+                    </div>
+                    <button class="action-btn centered-btn" onclick="transferToken()">SEND TOKENS</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p class="testnet-alert">⚠️ All contracts are in <strong>Testnet Mode</strong>. No real value assets.</p>
+        <div class="social-links">
+            <a href="https://t.me/MyCryproFinance" target="_blank">Telegram</a>
+            <a href="https://x.com/MyCryptoFinance" target="_blank">Twitter</a>
+            <a href="https://testnet.arcscan.app/address/0xe33A789a973F7ed878e72D03F8a505e794D9D468?tab=contract" target="_blank">ARC-Scan</a>
+        </div>
+        <p class="copyright">© 2026 MCF PROTOCOL</p>
+    </footer>
+
+    <div id="txModal" class="modal-overlay">
+        <div class="modal-contentmint">
+            <button class="close-x" onclick="closeModal()">&times;</button>
+            <div id="modalIcon"></div>
+            <div id="modalDesc"></div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="app.js"></script>
+    <script src="SkriptGM.js"></script>
+    <script src="DEPLOY TOKEN.js"></script>
+
+
+    <div id="tokenModal" class="modal">
+        <div class="modal-content glass-card">
+            <span class="close-modal" onclick="closeTokenModal()">&times;</span>
+            <h3 id="modalTokenName" class="modal-token-name">Manage Token</h3>
+            
+            <div class="token-management-body">
+                <div class="address-copy-row" style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                    <code id="modalTokenAddress" style="word-break: break-all; font-size: 0.8rem; color: #64ffda;">0x...</code>
+                    <button class="copy-icon-btn" onclick="copyModalAddress()" style="background: none; border: none; color: #64ffda; cursor: pointer;">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                
+                <button class="metamask-btn-modal" onclick="addModalTokenToMetamask()">
+                    <img src="assets/metamask-fox.svg" alt="" style="width: 20px;">
+                    Add to Metamask
+                </button>
+    
+                <div class="quick-send-section">
+                    <h4 class="send-title"><i class="fas fa-paper-plane"></i> Quick Send</h4>
+                    <input type="text" id="modalSendTo" class="modal-input" placeholder="Recipient Address (0x...)">
+                    <input type="number" id="modalSendAmount" class="modal-input" placeholder="Amount to send">
+                    <button class="action-btn" style="width: 100%; margin-top: 0px;" onclick="transferFromModal()">
+                        SEND TOKENS
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusModal" class="modal">
+        <div class="modal-content glass-card" style="text-align: center; padding: 30px 20px; max-width: 380px;">
+            <div id="statusIcon" class="status-icon-container" style="font-size: 50px; margin-bottom: 15px;">
+                <i class="fas fa-spinner fa-spin" style="color: #64ffda;"></i>
+            </div>
+            <h3 id="statusTitle" style="margin-bottom: 10px; font-size: 1.4rem;">Processing...</h3>
+            <p id="statusMessage" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 15px; line-height: 1.4;">
+                Please confirm the transaction in your wallet.
+            </p>
+    
+            <div id="txLinkContainer" style="display: none; margin-bottom: 20px;">
+                <a id="statusTxLink" href="#" target="_blank" style="color: #64ffda; text-decoration: none; font-size: 0.8rem; border-bottom: 1px dotted #64ffda;">
+                    <i class="fas fa-external-link-alt"></i> View on Explorer
+                </a>
+            </div>
+    
+            <button id="statusCloseBtn" class="action-btn" style="display: none; width: auto; min-width: 140px; margin: 0 auto; padding: 10px 30px;" onclick="closeStatusModal()">
+                Completed!
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
