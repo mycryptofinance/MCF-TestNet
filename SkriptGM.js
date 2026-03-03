@@ -118,6 +118,8 @@ async function handleGM() {
             explorerUrl = `https://robinhood.testnet.socialscan.io/tx/${tx.hash}`;
         } else if (network.chainId === 5042002) {
             explorerUrl = `https://testnet.arcscan.app/tx/${tx.hash}`;
+        } else if (network.chainId === 97) {
+            explorerUrl = `https://testnet.arcscan.app/tx/${tx.hash}`;
         }
 
         // 4. Показываем красивое модальное окно (используем твою структуру)
@@ -164,3 +166,4 @@ window.ethereum.on('chainChanged', () => {
     window.location.reload(); // Самый простой способ обновить статус контрактов
 
 });
+
