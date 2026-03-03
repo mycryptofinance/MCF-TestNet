@@ -136,7 +136,7 @@ async function handleGM() {
         if (error.code === 4001) {
             alert("User rejected the transaction");
         } else {
-            alert("Transaction failed! Check console for details.");
+            alert("Connect your Wallet.");
         }
     }
 }
@@ -166,6 +166,7 @@ window.ethereum.on('chainChanged', () => {
     window.location.reload(); // Самый простой способ обновить статус контрактов
 
 });
+
 
 
 
