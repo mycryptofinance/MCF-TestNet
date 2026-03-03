@@ -3,7 +3,7 @@ const GM_ABI = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"add
 const GM_ADDRESSES = {
     5042002: "0x3D61e47dF17BF638329Cd975cf8B449F13113f53",
     46630: "0xC9FcA60F832412C4fCfEB6D13E06657c8c55dE0c",
-    97: "0xe33A789a973F7ed878e72D03F8a505e794D9D468"
+    97: "0xe33A789a973F7ed878e72D03F8a505e794D9D468",
 };
 
 let gmCountdown;
@@ -166,5 +166,6 @@ window.ethereum.on('chainChanged', () => {
     window.location.reload(); // Самый простой способ обновить статус контрактов
 
 });
+
 
 
