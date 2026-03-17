@@ -115,8 +115,12 @@ function saveTokenToHistory(address, name, symbol, type, userAddress, networkId)
  */
 async function renderUserTokens(forcedAddr = null, forcedNet = null) {
     const listElement = document.getElementById('myTokensList');
-    if (!listElement) return;
+    if (!listElement) {
+        console.error("❌ ОШИБКА: Элемент #myTokensList не найден в HTML!");
+        return;
+    }
 
+       
     let userAddress = forcedAddr || (typeof userAccount !== 'undefined' ? userAccount : null);
 
    // Если кошелек подключен, берем актуальный ID сети напрямую из провайдера
