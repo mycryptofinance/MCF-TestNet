@@ -88,48 +88,21 @@ async function deployUserToken() {
  * Сохраняет данные о созданном токене в LocalStorage браузера
  */
 function saveTokenToHistory(address, name, symbol, type, userAddress, networkId) {
-    console.log("💾 Запуск сохранения токена в историю...");
-    
-    // 1. Проверка входных данных (защита от падения)
-    if (!address || !userAddress || !networkId) {
-        console.error("❌ ОШИБКА: Попытка сохранить токен с пустыми данными!", {address, userAddress, networkId});
-        return;
-    }
-
     const typeLabels = { '0': 'Standard', '1': 'Burnable', '2': 'Tax (5%)' };
-    const storageKey = 'mcf_created_tokens';
-    
-    try {
-        // 2. Читаем старые данные
-        let allTokens = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        
-        // 3. Создаем новый объект (принудительно чистим данные)
-        const newToken = {
-            creator: String(userAddress).toLowerCase(),
-            network: Number(networkId), // Превращаем BigNumber или String в обычное число
-            address: String(address),
-            name: String(name),
-            symbol: String(symbol),
-            type: typeLabels[String(type)] || 'Standard',
-            timestamp: Date.now()
-        };
+    let allTokens = JSON.parse(localStorage.getItem('mcf_created_tokens') || '[]');
+    allTokens.push({
+        creator: userAddress.toLowerCase(),
+        network: networkId,
+        address: address,
+        name: name,
+        symbol: symbol,
+        type: typeLabels[type] || 'Standard',
+        timestamp: Date.now()
+    });
 
-        console.log("📝 Подготовлен объект для записи:", newToken);
+    localStorage.setItem('mcf_created_tokens', JSON.stringify(allTokens));
+    renderUserTokens(userAddress, networkId);
 
-        // 4. Добавляем и сохраняем
-        allTokens.push(newToken);
-        localStorage.setItem(storageKey, JSON.stringify(allTokens));
-        
-        console.log("✅ LocalStorage обновлен успешно!");
-
-        // 5. Вызываем отрисовку
-        if (typeof renderUserTokens === 'function') {
-            renderUserTokens(userAddress, networkId);
-        }
-
-    } catch (error) {
-        console.error("❌ КРИТИЧЕСКАЯ ОШИБКА LocalStorage:", error);
-    }
 }
 
 /* ============================================================
@@ -141,85 +114,38 @@ function saveTokenToHistory(address, name, symbol, type, userAddress, networkId)
  * Отрисовывает список токенов пользователя в интерфейсе и запрашивает балансы
  */
 async function renderUserTokens(forcedAddr = null, forcedNet = null) {
-    console.log("--- 🔍 ЗАПУСК ДИАГНОСТИКИ СПИСКА ТОКЕНОВ ---");
-    
     const listElement = document.getElementById('myTokensList');
     if (!listElement) {
-        console.error("❌ ОШИБКА: Элемент #myTokensList не найден в HTML. Проверь ID в разметке.");
+        console.error("❌ ОШИБКА: Элемент #myTokensList не найден в HTML!");
         return;
     }
-
-    // --- ПРОВЕРКА И ИНИЦИАЛИЗАЦИЯ ПРОВАЙДЕРА ---
-    // Если глобальный provider не определен, создаем его локально для функции
-    let currentProvider;
-    if (typeof provider !== 'undefined' && provider) {
-        currentProvider = provider;
-    } else if (window.ethereum) {
-        currentProvider = new ethers.providers.Web3Provider(window.ethereum);
-        console.log("✅ Провайдер инициализирован локально внутри функции");
-    } else {
-        console.error("❌ КРИТИЧЕСКАЯ ОШИБКА: MetaMask не найден, провайдер не определен.");
-        listElement.innerHTML = '<p class="empty-msg">Please install MetaMask</p>';
-        return;
-    }
-
+ 
     let userAddress = forcedAddr || (typeof userAccount !== 'undefined' ? userAccount : null);
-    console.log("📍 Адрес пользователя:", userAddress);
 
-    // Берем актуальный ID сети через проверенный провайдер
-    let netId;
-    try {
-        if (forcedNet) {
-            netId = forcedNet;
-            console.log("🌐 Сеть (форсировано):", netId);
-        } else {
-            const net = await currentProvider.getNetwork();
-            netId = net.chainId;
-            console.log("🌐 Сеть (из провайдера):", netId);
-        }
-    } catch (e) {
-        console.error("❌ Ошибка при определении сети:", e);
-    }
+    let netId = forcedNet || currentChainId;
 
     if (!userAddress) {
-        console.warn("⚠️ Кошелек не подключен. Прекращаю рендер.");
         listElement.innerHTML = '<p class="empty-msg">Connect wallet to view tokens</p>';
         return;
     }
 
-    // Проверка LocalStorage
-    const storageKey = 'mcf_created_tokens';
-    const rawData = localStorage.getItem(storageKey);
-    console.log(`📦 Данные в LocalStorage по ключу '${storageKey}':`, rawData);
-
-    const allTokens = JSON.parse(rawData || '[]');
-    console.log(`📑 Всего токенов в базе данных: ${allTokens.length}`);
-
-    // Фильтрация с логированием причин
-    const userTokens = allTokens.filter(t => {
-        const isCreator = t.creator && userAddress && t.creator.toLowerCase() === userAddress.toLowerCase();
-        const isCorrectNet = Number(t.network) === Number(netId);
-        
-        console.log(`  > Проверка [${t.symbol}]: Аккаунт совпал: ${isCreator}, Сеть совпала: ${isCorrectNet} (База: ${t.network}, Сейчас: ${netId})`);
-        
-        return isCreator && isCorrectNet;
-    });
-
-    console.log(`✅ Итого токенов к отображению: ${userTokens.length}`);
-
+    const allTokens = JSON.parse(localStorage.getItem('mcf_created_tokens') || '[]');
+    const userTokens = allTokens.filter(t => 
+    t.creator.toLowerCase() === userAddress.toLowerCase() && 
+                t.creator.toLowerCase() === userAddress.toLowerCase() && (!netId || t.network === netId)
+     );
+       
+   
     if (userTokens.length === 0) {
         listElement.innerHTML = '<p class="empty-msg">No tokens created yet</p>';
         return;
     }
 
-    // Рендер списка
     listElement.innerHTML = userTokens.map(token => {
         const typeClass = token.type.toLowerCase().includes('burn') ? 'badge-burn' : 
                           token.type.toLowerCase().includes('tax') ? 'badge-tax' : 'badge-std';
-        
-        const explorerBase = EXPLORER_URLS[netId] || "https://testnet.arcscan.app/address/";
+        const explorerBase = EXPLORER_URLS[netId] || "https://etherscan.io/address/";
         const explorerLink = explorerBase + token.address;
-
         return `
         <div class="token-item">
             <div class="token-info">
@@ -248,13 +174,12 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
         </div>`;
     }).reverse().join('');
 
-    // Загрузка балансов
     userTokens.forEach(async (token) => {
         try {
             const tokenContract = new ethers.Contract(token.address, [
                 "function balanceOf(address owner) view returns (uint256)",
                 "function decimals() view returns (uint8)"
-            ], currentProvider);
+            ], provider);
             
             const [balance, decimals] = await Promise.all([
                 tokenContract.balanceOf(userAddress),
@@ -266,23 +191,24 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
             const displayBalance = numBalance.toLocaleString(undefined, {maximumFractionDigits: 2});
             
             const balEl = document.getElementById(`balance-${token.address}`);
+            const tokenItem = balEl.closest('.token-item');
+            const hideZero = document.getElementById('hideZeroCheckbox')?.checked;
+
             if (balEl) {
                 balEl.innerHTML = `<i class="fas fa-wallet" style="font-size: 0.7rem; color: #64ffda; margin-right: 5px;"></i> ${displayBalance} ${token.symbol}`;
-                
-                const tokenItem = balEl.closest('.token-item');
-                const hideZero = document.getElementById('hideZeroCheckbox')?.checked;
+            }
 
-                if (hideZero && numBalance === 0) {
-                    tokenItem.style.display = 'none'; 
-                } else {
-                    tokenItem.style.display = 'flex';
-                }
+            if (hideZero && numBalance === 0) {
+                tokenItem.style.display = 'none'; 
+            } else {
+                tokenItem.style.display = 'flex';
             }
         } catch (e) {
-            console.error(`❌ Ошибка баланса для токена ${token.symbol} (${token.address}):`, e);
+            console.error("Balance error:", e);
         }
     });
 }
+
 /* ============================================================
    4. ВЗАИМОДЕЙСТВИЕ С WALLET (METAMASK) И ТРАНЗАКЦИИ
    Отправка токенов, добавление в кошелек и копирование
