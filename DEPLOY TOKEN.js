@@ -114,50 +114,72 @@ function saveTokenToHistory(address, name, symbol, type, userAddress, networkId)
  * Отрисовывает список токенов пользователя в интерфейсе и запрашивает балансы
  */
 async function renderUserTokens(forcedAddr = null, forcedNet = null) {
+    console.log("--- 🔍 ЗАПУСК ДИАГНОСТИКИ СПИСКА ТОКЕНОВ ---");
+    
     const listElement = document.getElementById('myTokensList');
     if (!listElement) {
-        console.error("❌ ОШИБКА: Элемент #myTokensList не найден в HTML!");
+        console.error("❌ ОШИБКА: Элемент #myTokensList не найден в HTML. Проверь ID в разметке.");
         return;
     }
 
-       
     let userAddress = forcedAddr || (typeof userAccount !== 'undefined' ? userAccount : null);
+    console.log("📍 Адрес пользователя:", userAddress);
 
-   // Если кошелек подключен, берем актуальный ID сети напрямую из провайдера
+    // Берем актуальный ID сети
     let netId;
-    if (forcedNet) {
-        netId = forcedNet;
-    } else {
-        const net = await provider.getNetwork();
-        netId = net.chainId;
+    try {
+        if (forcedNet) {
+            netId = forcedNet;
+            console.log("🌐 Сеть (форсировано):", netId);
+        } else {
+            const net = await provider.getNetwork();
+            netId = net.chainId;
+            console.log("🌐 Сеть (из провайдера):", netId);
+        }
+    } catch (e) {
+        console.error("❌ Ошибка при определении сети:", e);
     }
-   
-   // let netId = forcedNet || currentChainId;
 
     if (!userAddress) {
+        console.warn("⚠️ Кошелек не подключен. Прекращаю рендер.");
         listElement.innerHTML = '<p class="empty-msg">Connect wallet to view tokens</p>';
         return;
     }
 
-    const allTokens = JSON.parse(localStorage.getItem('mcf_created_tokens') || '[]');
-    const userTokens = allTokens.filter(t => 
-    t.creator.toLowerCase() === userAddress.toLowerCase() && 
-        Number(t.network) === Number(netId)
-    );
-       
-    //      t.creator.toLowerCase() === userAddress.toLowerCase() && (!netId || t.network === netId)
-    // );
+    // Проверка LocalStorage
+    const storageKey = 'mcf_created_tokens';
+    const rawData = localStorage.getItem(storageKey);
+    console.log(`📦 Данные в LocalStorage по ключу '${storageKey}':`, rawData);
+
+    const allTokens = JSON.parse(rawData || '[]');
+    console.log(`📑 Всего токенов в базе данных: ${allTokens.length}`);
+
+    // Фильтрация с логированием причин
+    const userTokens = allTokens.filter(t => {
+        const isCreator = t.creator.toLowerCase() === userAddress.toLowerCase();
+        const isCorrectNet = Number(t.network) === Number(netId);
+        
+        console.log(`  > Проверка токена [${t.symbol}]: Аккаунт совпал: ${isCreator}, Сеть совпала: ${isCorrectNet} (База: ${t.network}, Сейчас: ${netId})`);
+        
+        return isCreator && isCorrectNet;
+    });
+
+    console.log(`✅ Итого токенов к отображению: ${userTokens.length}`);
 
     if (userTokens.length === 0) {
         listElement.innerHTML = '<p class="empty-msg">No tokens created yet</p>';
         return;
     }
 
+    // Рендер списка
     listElement.innerHTML = userTokens.map(token => {
         const typeClass = token.type.toLowerCase().includes('burn') ? 'badge-burn' : 
                           token.type.toLowerCase().includes('tax') ? 'badge-tax' : 'badge-std';
-        const explorerBase = EXPLORER_URLS[netId] || "https://etherscan.io/address/";
+        
+        // Проверка наличия URL эксплорера
+        const explorerBase = EXPLORER_URLS[netId] || "https://testnet.arcscan.app/address/";
         const explorerLink = explorerBase + token.address;
+
         return `
         <div class="token-item">
             <div class="token-info">
@@ -186,6 +208,7 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
         </div>`;
     }).reverse().join('');
 
+    // Загрузка балансов
     userTokens.forEach(async (token) => {
         try {
             const tokenContract = new ethers.Contract(token.address, [
@@ -203,24 +226,23 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
             const displayBalance = numBalance.toLocaleString(undefined, {maximumFractionDigits: 2});
             
             const balEl = document.getElementById(`balance-${token.address}`);
-            const tokenItem = balEl.closest('.token-item');
-            const hideZero = document.getElementById('hideZeroCheckbox')?.checked;
-
             if (balEl) {
                 balEl.innerHTML = `<i class="fas fa-wallet" style="font-size: 0.7rem; color: #64ffda; margin-right: 5px;"></i> ${displayBalance} ${token.symbol}`;
-            }
+                
+                const tokenItem = balEl.closest('.token-item');
+                const hideZero = document.getElementById('hideZeroCheckbox')?.checked;
 
-            if (hideZero && numBalance === 0) {
-                tokenItem.style.display = 'none'; 
-            } else {
-                tokenItem.style.display = 'flex';
+                if (hideZero && numBalance === 0) {
+                    tokenItem.style.display = 'none'; 
+                } else {
+                    tokenItem.style.display = 'flex';
+                }
             }
         } catch (e) {
-            console.error("Balance error:", e);
+            console.error(`❌ Ошибка баланса для токена ${token.symbol} (${token.address}):`, e);
         }
     });
 }
-
 /* ============================================================
    4. ВЗАИМОДЕЙСТВИЕ С WALLET (METAMASK) И ТРАНЗАКЦИИ
    Отправка токенов, добавление в кошелек и копирование
