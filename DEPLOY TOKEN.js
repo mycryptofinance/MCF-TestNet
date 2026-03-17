@@ -491,28 +491,30 @@ window.onclick = function(event) {
 }
 
 window.addEventListener('load', async () => {
-    console.log("🚀 Страница загружена, проверка состояния кошелька...");
+    console.log("🚀 Инициализация интерфейса...");
 
-    // Даем небольшую паузу (100-200мс), чтобы MetaMask успел инициализироваться
-    setTimeout(async () => {
+    // 1. Пробуем найти провайдера, если он еще не создан в другом файле
+    if (typeof window.ethereum !== 'undefined') {
         try {
-            if (window.ethereum) {
-                const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
-                const accounts = await tempProvider.listAccounts();
+            const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
+            
+            // 2. Запрашиваем аккаунты напрямую у MetaMask
+            const accounts = await tempProvider.listAccounts();
+            
+            if (accounts.length > 0) {
+                const activeAcc = accounts[0];
+                const net = await tempProvider.getNetwork();
                 
-                if (accounts.length > 0) {
-                    const activeAcc = accounts[0];
-                    const net = await tempProvider.getNetwork();
-                    
-                    console.log("✅ Аккаунт найден автоматически:", activeAcc);
-                    // Вызываем рендер, передавая актуальные данные
-                    renderUserTokens(activeAcc, net.chainId);
-                } else {
-                    console.log("ℹ️ Кошелек не подключен, ждем действия пользователя.");
-                }
+                console.log("✅ Авто-вход выполнен:", activeAcc, "Сеть:", net.chainId);
+                
+                // ПРИНУДИТЕЛЬНЫЙ ВЫЗОВ РЕНДЕРА
+                // Мы передаем данные напрямую, не полагаясь на глобальные переменные
+                await renderUserTokens(activeAcc, net.chainId);
+            } else {
+                console.warn("⚠️ Аккаунт не найден. Нажмите 'Connect Wallet'.");
             }
-        } catch (e) {
-            console.error("❌ Ошибка при авто-загрузке токенов:", e);
+        } catch (err) {
+            console.error("❌ Ошибка при авто-загрузке:", err);
         }
-    }, 200); 
+    }
 });
