@@ -178,6 +178,7 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
             const [balance, decimals] = await Promise.all([
                 tokenContract.balanceOf(userAddress),
                 tokenContract.decimals()
+                updateBalances();
             ]);
             
             const formattedBalance = ethers.utils.formatUnits(balance, decimals);
