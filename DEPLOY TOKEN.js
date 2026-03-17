@@ -118,7 +118,17 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
     if (!listElement) return;
 
     let userAddress = forcedAddr || (typeof userAccount !== 'undefined' ? userAccount : null);
-    let netId = forcedNet || currentChainId;
+
+   // Если кошелек подключен, берем актуальный ID сети напрямую из провайдера
+    let netId;
+    if (forcedNet) {
+        netId = forcedNet;
+    } else {
+        const net = await provider.getNetwork();
+        netId = net.chainId;
+    }
+   
+   // let netId = forcedNet || currentChainId;
 
     if (!userAddress) {
         listElement.innerHTML = '<p class="empty-msg">Connect wallet to view tokens</p>';
@@ -127,8 +137,12 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
 
     const allTokens = JSON.parse(localStorage.getItem('mcf_created_tokens') || '[]');
     const userTokens = allTokens.filter(t => 
-        t.creator.toLowerCase() === userAddress.toLowerCase() && (!netId || t.network === netId)
+    t.creator.toLowerCase() === userAddress.toLowerCase() && 
+        Number(t.network) === Number(netId)
     );
+       
+    //      t.creator.toLowerCase() === userAddress.toLowerCase() && (!netId || t.network === netId)
+    // );
 
     if (userTokens.length === 0) {
         listElement.innerHTML = '<p class="empty-msg">No tokens created yet</p>';
