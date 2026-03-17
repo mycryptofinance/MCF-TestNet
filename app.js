@@ -153,6 +153,8 @@ async function connect() {
         fetchMCFData();
         checkNFTs();
         loadRealStakes();
+        tokenContract.balanceOf(userAddress),
+        tokenContract.decimals()
 
         // --- ДОБАВЛЯЕМ ОТРИСОВКУ ТОКЕНОВ ТУТ ---
         if (typeof renderUserTokens === "function") {
