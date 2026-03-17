@@ -88,21 +88,48 @@ async function deployUserToken() {
  * Сохраняет данные о созданном токене в LocalStorage браузера
  */
 function saveTokenToHistory(address, name, symbol, type, userAddress, networkId) {
+    console.log("💾 Запуск сохранения токена в историю...");
+    
+    // 1. Проверка входных данных (защита от падения)
+    if (!address || !userAddress || !networkId) {
+        console.error("❌ ОШИБКА: Попытка сохранить токен с пустыми данными!", {address, userAddress, networkId});
+        return;
+    }
+
     const typeLabels = { '0': 'Standard', '1': 'Burnable', '2': 'Tax (5%)' };
-    let allTokens = JSON.parse(localStorage.getItem('mcf_created_tokens') || '[]');
+    const storageKey = 'mcf_created_tokens';
     
-    allTokens.push({
-        creator: userAddress.toLowerCase(),
-        network: networkId,
-        address: address,
-        name: name,
-        symbol: symbol,
-        type: typeLabels[type] || 'Standard',
-        timestamp: Date.now()
-    });
-    
-    localStorage.setItem('mcf_created_tokens', JSON.stringify(allTokens));
-    renderUserTokens(userAddress, networkId);
+    try {
+        // 2. Читаем старые данные
+        let allTokens = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        // 3. Создаем новый объект (принудительно чистим данные)
+        const newToken = {
+            creator: String(userAddress).toLowerCase(),
+            network: Number(networkId), // Превращаем BigNumber или String в обычное число
+            address: String(address),
+            name: String(name),
+            symbol: String(symbol),
+            type: typeLabels[String(type)] || 'Standard',
+            timestamp: Date.now()
+        };
+
+        console.log("📝 Подготовлен объект для записи:", newToken);
+
+        // 4. Добавляем и сохраняем
+        allTokens.push(newToken);
+        localStorage.setItem(storageKey, JSON.stringify(allTokens));
+        
+        console.log("✅ LocalStorage обновлен успешно!");
+
+        // 5. Вызываем отрисовку
+        if (typeof renderUserTokens === 'function') {
+            renderUserTokens(userAddress, networkId);
+        }
+
+    } catch (error) {
+        console.error("❌ КРИТИЧЕСКАЯ ОШИБКА LocalStorage:", error);
+    }
 }
 
 /* ============================================================
