@@ -122,17 +122,31 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
         return;
     }
 
+    // --- ПРОВЕРКА И ИНИЦИАЛИЗАЦИЯ ПРОВАЙДЕРА ---
+    // Если глобальный provider не определен, создаем его локально для функции
+    let currentProvider;
+    if (typeof provider !== 'undefined' && provider) {
+        currentProvider = provider;
+    } else if (window.ethereum) {
+        currentProvider = new ethers.providers.Web3Provider(window.ethereum);
+        console.log("✅ Провайдер инициализирован локально внутри функции");
+    } else {
+        console.error("❌ КРИТИЧЕСКАЯ ОШИБКА: MetaMask не найден, провайдер не определен.");
+        listElement.innerHTML = '<p class="empty-msg">Please install MetaMask</p>';
+        return;
+    }
+
     let userAddress = forcedAddr || (typeof userAccount !== 'undefined' ? userAccount : null);
     console.log("📍 Адрес пользователя:", userAddress);
 
-    // Берем актуальный ID сети
+    // Берем актуальный ID сети через проверенный провайдер
     let netId;
     try {
         if (forcedNet) {
             netId = forcedNet;
             console.log("🌐 Сеть (форсировано):", netId);
         } else {
-            const net = await provider.getNetwork();
+            const net = await currentProvider.getNetwork();
             netId = net.chainId;
             console.log("🌐 Сеть (из провайдера):", netId);
         }
@@ -156,10 +170,10 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
 
     // Фильтрация с логированием причин
     const userTokens = allTokens.filter(t => {
-        const isCreator = t.creator.toLowerCase() === userAddress.toLowerCase();
+        const isCreator = t.creator && userAddress && t.creator.toLowerCase() === userAddress.toLowerCase();
         const isCorrectNet = Number(t.network) === Number(netId);
         
-        console.log(`  > Проверка токена [${t.symbol}]: Аккаунт совпал: ${isCreator}, Сеть совпала: ${isCorrectNet} (База: ${t.network}, Сейчас: ${netId})`);
+        console.log(`  > Проверка [${t.symbol}]: Аккаунт совпал: ${isCreator}, Сеть совпала: ${isCorrectNet} (База: ${t.network}, Сейчас: ${netId})`);
         
         return isCreator && isCorrectNet;
     });
@@ -176,7 +190,6 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
         const typeClass = token.type.toLowerCase().includes('burn') ? 'badge-burn' : 
                           token.type.toLowerCase().includes('tax') ? 'badge-tax' : 'badge-std';
         
-        // Проверка наличия URL эксплорера
         const explorerBase = EXPLORER_URLS[netId] || "https://testnet.arcscan.app/address/";
         const explorerLink = explorerBase + token.address;
 
@@ -214,7 +227,7 @@ async function renderUserTokens(forcedAddr = null, forcedNet = null) {
             const tokenContract = new ethers.Contract(token.address, [
                 "function balanceOf(address owner) view returns (uint256)",
                 "function decimals() view returns (uint8)"
-            ], provider);
+            ], currentProvider);
             
             const [balance, decimals] = await Promise.all([
                 tokenContract.balanceOf(userAddress),
