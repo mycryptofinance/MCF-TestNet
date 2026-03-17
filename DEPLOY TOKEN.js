@@ -462,3 +462,10 @@ window.onclick = function(event) {
     const modal = document.getElementById('tokenModal');
     if (event.target == modal) closeTokenModal();
 }
+
+window.addEventListener('load', async () => {
+    // Ждем инициализации провайдера, затем:
+    if (typeof userAccount !== 'undefined' && userAccount) {
+        renderUserTokens(userAccount);
+    }
+});
