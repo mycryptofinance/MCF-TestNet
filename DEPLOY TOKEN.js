@@ -88,21 +88,48 @@ async function deployUserToken() {
  * Сохраняет данные о созданном токене в LocalStorage браузера
  */
 function saveTokenToHistory(address, name, symbol, type, userAddress, networkId) {
+    console.log("💾 Запуск сохранения токена в историю...");
+    
+    // 1. Проверка входных данных (защита от падения)
+    if (!address || !userAddress || !networkId) {
+        console.error("❌ ОШИБКА: Попытка сохранить токен с пустыми данными!", {address, userAddress, networkId});
+        return;
+    }
+
     const typeLabels = { '0': 'Standard', '1': 'Burnable', '2': 'Tax (5%)' };
-    let allTokens = JSON.parse(localStorage.getItem('mcf_created_tokens') || '[]');
-    allTokens.push({
-        creator: userAddress.toLowerCase(),
-        network: networkId,
-        address: address,
-        name: name,
-        symbol: symbol,
-        type: typeLabels[type] || 'Standard',
-        timestamp: Date.now()
-    });
+    const storageKey = 'mcf_created_tokens';
+    
+    try {
+        // 2. Читаем старые данные
+        let allTokens = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        
+        // 3. Создаем новый объект (принудительно чистим данные)
+        const newToken = {
+            creator: String(userAddress).toLowerCase(),
+            network: Number(networkId), // Превращаем BigNumber или String в обычное число
+            address: String(address),
+            name: String(name),
+            symbol: String(symbol),
+            type: typeLabels[String(type)] || 'Standard',
+            timestamp: Date.now()
+        };
 
-    localStorage.setItem('mcf_created_tokens', JSON.stringify(allTokens));
-    renderUserTokens(userAddress, networkId);
+        console.log("📝 Подготовлен объект для записи:", newToken);
 
+        // 4. Добавляем и сохраняем
+        allTokens.push(newToken);
+        localStorage.setItem(storageKey, JSON.stringify(allTokens));
+        
+        console.log("✅ LocalStorage обновлен успешно!");
+
+        // 5. Вызываем отрисовку
+        if (typeof renderUserTokens === 'function') {
+            renderUserTokens(userAddress, networkId);
+        }
+
+    } catch (error) {
+        console.error("❌ КРИТИЧЕСКАЯ ОШИБКА LocalStorage:", error);
+    }
 }
 
 /* ============================================================
@@ -464,8 +491,28 @@ window.onclick = function(event) {
 }
 
 window.addEventListener('load', async () => {
-    // Ждем инициализации провайдера, затем:
-    if (typeof userAccount !== 'undefined' && userAccount) {
-        renderUserTokens(userAccount);
-    }
+    console.log("🚀 Страница загружена, проверка состояния кошелька...");
+
+    // Даем небольшую паузу (100-200мс), чтобы MetaMask успел инициализироваться
+    setTimeout(async () => {
+        try {
+            if (window.ethereum) {
+                const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
+                const accounts = await tempProvider.listAccounts();
+                
+                if (accounts.length > 0) {
+                    const activeAcc = accounts[0];
+                    const net = await tempProvider.getNetwork();
+                    
+                    console.log("✅ Аккаунт найден автоматически:", activeAcc);
+                    // Вызываем рендер, передавая актуальные данные
+                    renderUserTokens(activeAcc, net.chainId);
+                } else {
+                    console.log("ℹ️ Кошелек не подключен, ждем действия пользователя.");
+                }
+            }
+        } catch (e) {
+            console.error("❌ Ошибка при авто-загрузке токенов:", e);
+        }
+    }, 200); 
 });
